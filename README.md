@@ -16,6 +16,8 @@
 - ✅ How to create a database table in Supabase
 - ✅ How to connect everything to your project using a `.env` file
 - ✅ How to deploy Supabase Edge Functions
+- ✅ How to deploy on Vercel (with environment variables)
+- ✅ How to fix Google login on Vercel
 - ✅ Common errors and how to fix them
 
 ---
@@ -476,7 +478,80 @@ Deployed Functions on project your_ref: your_function_name
 
 ---
 
-# PART 5 — COMMON ERRORS & FIXES 🐛
+# PART 5 — DEPLOYING ON VERCEL 🚀
+
+> When you deploy your app on Vercel, two things break immediately:
+> 1. Environment variables are missing — your `.env` file does not go to Vercel automatically
+> 2. Google login stops working — Firebase does not trust Vercel's domain by default
+>
+> This section fixes both.
+
+---
+
+## Step 18 — Add Environment Variables on Vercel
+
+> Your `.env` file stays on your computer. Vercel does not know about it.
+> You have to add all variables manually — or import them directly.
+
+1. Go to [vercel.com](https://vercel.com) and open your project
+2. Click the **"Settings"** tab
+3. Click **"Environment Variables"** in the left sidebar
+4. At the bottom, click the **"Import .env"** button
+
+   > This is the easiest method — it reads your `.env` file and adds all variables at once!
+
+5. Select your `.env` file from your computer
+6. All variables will appear automatically
+7. Click **"Save"**
+
+### Warning — "This key might expose sensitive information"
+
+You may see a warning icon next to keys like `VITE_FIREBASE_API_KEY`.
+
+This is NOT an error. Vercel is warning you that `VITE_` prefix keys are visible in the browser. For Firebase keys, this is completely normal — Firebase keys are designed to be public. Just click **"Mark as Safe"** and continue.
+
+### After Adding Variables — Redeploy Your App
+
+1. Go to **"Deployments"** tab
+2. Click on the latest deployment
+3. Click **"Redeploy"** button
+4. Wait 1-2 minutes
+5. Visit your Vercel URL and test the app
+
+---
+
+## Step 19 — Fix Google Login on Vercel
+
+**Problem:** Google login works on `localhost` but shows a blank white popup on Vercel.
+
+**Why this happens:** Firebase only allows Google login from domains it trusts. `localhost` is trusted by default. Your Vercel domain is NOT trusted by default. You have to tell Firebase: "This Vercel domain is mine — trust it!"
+
+### Steps to Add Your Vercel Domain to Firebase
+
+1. Go to [console.firebase.google.com](https://console.firebase.google.com)
+2. Open your project
+3. Left sidebar → **Authentication** → **Settings** tab
+4. Scroll down to the **"Authorized domains"** section
+5. Click **"Add domain"** and add your main Vercel URL:
+   ```
+   your-app-name.vercel.app
+   ```
+6. Click **"Add domain"** again and add your preview URL too:
+   ```
+   your-app-git-main-yourusername.vercel.app
+   ```
+
+### Where to Find Your Vercel URLs
+
+Go to Vercel → your project → **Deployments** → click the latest deployment → look under the **"Domains"** section. You will see all your URLs listed there. Add each one to Firebase.
+
+> Note: Email/Password login is NOT affected by this — it works on any domain without this step.
+> Only Google login and other OAuth providers like GitHub need authorized domains added.
+
+---
+
+# PART 6 — COMMON ERRORS & FIXES 🐛
+
 
 ---
 
@@ -577,7 +652,7 @@ service cloud.firestore {
 
 ---
 
-# PART 6 — UNDERSTANDING YOUR KEYS 🔑
+# PART 7 — UNDERSTANDING YOUR KEYS 🔑
 
 This is important. Different keys go to different places.
 
@@ -598,7 +673,7 @@ This is important. Different keys go to different places.
 
 ---
 
-# PART 7 — FINAL CHECKLIST ✅
+# PART 8 — FINAL CHECKLIST ✅
 
 Use this every time you set up a new project:
 
